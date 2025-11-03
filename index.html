@@ -1,0 +1,114 @@
+<!DOCTYPE html> 
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Strong Password Generator</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #4CAF50, #2E7D32);
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+    h2 { margin-bottom: 20px; }
+    .container {
+      background: rgba(255, 255, 255, 0.15);
+      padding: 25px 30px;
+      border-radius: 16px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+      text-align: center;
+      width: 320px;
+    }
+    input, button {
+      font-size: 16px;
+      margin: 8px 0;
+      padding: 8px;
+      border: none;
+      border-radius: 8px;
+    }
+    input[type="number"] {
+      width: 80px;
+      text-align: center;
+    }
+    #pwd {
+      width: 100%;
+      background: white;
+      color: #333;
+    }
+    button {
+      background: #1B5E20;
+      color: white;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    button:hover { background: #2E7D32; }
+    #copy { background: #1976D2; }
+    #copy:hover { background: #0D47A1; }
+    footer {
+      margin-top: 15px;
+      font-size: 13px;
+      color: #e0e0e0;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>🔐 Strong Password Generator</h2>
+    <label>Length: </label>
+    <input id="len" type="number" value="12" min="8">
+    <br>
+    <button id="gen">Get Password</button>
+    <br>
+    <input id="pwd" readonly>
+    <br>
+    <button id="copy">Copy</button>
+    <footer>Generated locally — never sent online ✅</footer>
+  </div>
+
+  <script>
+    function generate(length) {
+      const lower = "abcdefghijklmnopqrstuvwxyz";
+      const upper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+      const digits = "0123456789";
+      const special = "!@#$%^&*()-_=+[]{};:,.<>?/";
+      const all = lower + upper + digits + special;
+
+      let pwd = [
+        lower[Math.floor(Math.random()*lower.length)],
+        upper[Math.floor(Math.random()*upper.length)],
+        digits[Math.floor(Math.random()*digits.length)],
+        special[Math.floor(Math.random()*special.length)]
+      ];
+
+      for (let i = 0; i < length - 4; i++) {
+        pwd.push(all[Math.floor(Math.random()*all.length)]);
+      }
+
+      // Shuffle array
+      for (let i = pwd.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [pwd[i], pwd[j]] = [pwd[j], pwd[i]];
+      }
+      return pwd.join('');
+    }
+
+    document.getElementById("gen").onclick = () => {
+      const len = Math.max(8, parseInt(document.getElementById("len").value) || 12);
+      document.getElementById("pwd").value = generate(len);
+    };
+
+    document.getElementById("copy").onclick = () => {
+      const pwd = document.getElementById("pwd").value;
+      if (!pwd) return;
+      navigator.clipboard.writeText(pwd);
+      alert("Password copied to clipboard!");
+    };
+  </script>
+</body>
+</html>
